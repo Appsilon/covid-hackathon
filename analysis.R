@@ -1,15 +1,26 @@
 library(arrow)
 library(purrr)
 library(lubridate)
+library(dplyr)
 
-dataDir <- "veraset"
-dataPaths <- purrr::keep(dir(dataDir), ~ grepl(".*snappy.parquet$", .))
-data <- map(dataPaths, ~ read_parquet(paste0("veraset/", .), as_tibble = TRUE))
+read_full_data <- function() {
+  dataDir <- "veraset"
+  dataPaths <- purrr::keep(dir(dataDir), ~ grepl(".*snappy.parquet$", .))
+  data_raw <- map(dataPaths, ~ read_parquet(paste0("veraset/", .), as_tibble = TRUE))
+  bind_rows(data_raw)
+}
 
-uid <- map(data, ~ unique(.$caid)) %>% unlist %>% unique
-rm(uid)
+data <- read_full_data()
+
+# Look at the unique ids:
+uid <- unique(data$caid)
+# rm(uid)
 
 as.Date(as.POSIXct(value, origin="1970-01-01"))
-dates <- map(data, ~ unique(date(as.Date(as.POSIXct(as.numeric(.$utc_timestamp), origin="1970-01-01"))))) %>%
-  unlist %>%
-  unique
+dates <- map(data, ~ unique(date(as.Date(as.POSIXct(as.numeric(.$utc_timestamp), origin="1970-01-01")))))
+
+single_person <- function(data, id) {
+  filter(data, caid == id)
+}
+
+single_data <- single_person(uid[1])
