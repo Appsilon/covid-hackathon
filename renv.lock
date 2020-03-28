@@ -1,6 +1,10 @@
 {
   "R": {
+<<<<<<< HEAD
     "Version": "3.6.2",
+=======
+    "Version": "3.6.1",
+>>>>>>> 6665a23c2c1e75aab4a18b5d626d766342b24ac7
     "Repositories": [
       {
         "Name": "CRAN",
@@ -100,6 +104,7 @@
       "Repository": "CRAN",
       "Hash": "b95a15fe144c0db82f8f55cd961b4961"
     },
+<<<<<<< HEAD
     "geohashTools": {
       "Package": "geohashTools",
       "Version": "0.3.0",
@@ -107,6 +112,8 @@
       "Repository": "CRAN",
       "Hash": "df6a9073e242c815635aee108735859f"
     },
+=======
+>>>>>>> 6665a23c2c1e75aab4a18b5d626d766342b24ac7
     "glue": {
       "Package": "glue",
       "Version": "1.3.2",
