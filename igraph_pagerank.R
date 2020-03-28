@@ -1,6 +1,11 @@
+library(igraph)
 
-graph <- graph_from_edgelist(el, directed = TRUE)
+graph <- graph_from_edgelist(edges, directed = TRUE)
 
-page_rank(graph, algo = c("prpack", "arpack", "power"),
-          vids = V(graph), directed = TRUE, damping = 0.85,
-          personalized = NULL, weights = NULL, options = NULL)
+pr <- page_rank(graph, algo = "prpack", directed = FALSE, damping = 0.99)
+          # weights = NULL)
+
+pagerank.out <- tibble(
+  node = names(pr$vector),
+  score = pr$vector
+)
