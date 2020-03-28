@@ -20,7 +20,10 @@ as.Date(as.POSIXct(value, origin="1970-01-01"))
 dates <- map(data, ~ unique(date(as.Date(as.POSIXct(as.numeric(.$utc_timestamp), origin="1970-01-01")))))
 
 single_person <- function(data, id) {
-  filter(data, caid == id)
+  map(data, function(set) {
+    set$caid <- set$caid %>% filter(. == id)
+    set
+  })
 }
 
-single_data <- single_person(uid[1])
+single_data <- single_person(data[[1]], uid[1])
