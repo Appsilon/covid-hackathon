@@ -219,6 +219,13 @@
       "Repository": "CRAN",
       "Hash": "7a0d4ec0aa0299e3907f8f4f982e33b4"
     },
+    "flexdashboard": {
+      "Package": "flexdashboard",
+      "Version": "0.5.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e0b4ef1ef5e14a7f71edf71c3017febf"
+    },
     "foreign": {
       "Package": "foreign",
       "Version": "0.8-71",
@@ -268,6 +275,13 @@
       "Repository": "CRAN",
       "Hash": "6a58b2980a57345822ec5f9c7d2d1751"
     },
+    "highr": {
+      "Package": "highr",
+      "Version": "0.8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "43e36bc8bca1d8256f86933659c46349"
+    },
     "htmltools": {
       "Package": "htmltools",
       "Version": "0.4.0",
@@ -310,6 +324,13 @@
       "Repository": "CRAN",
       "Hash": "725056796d6009be6f51d9d0cd40cca1"
     },
+    "knitr": {
+      "Package": "knitr",
+      "Version": "1.28",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ca3cf1ffbac48e7da7c62b69785486bc"
+    },
     "labeling": {
       "Package": "labeling",
       "Version": "0.3",
@@ -344,13 +365,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "d8d72835b8a9324b95e2832b1d43e3c5"
-    },
-    "leaflet.extras": {
-      "Package": "leaflet.extras",
-      "Version": "1.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "5709b591460151245e0fc0a4b6cb5c8c"
     },
     "leaflet.mapboxgl": {
       "Package": "leaflet.mapboxgl",
@@ -553,6 +567,13 @@
       "Repository": "CRAN",
       "Hash": "06c992bbca11c557891193289cb02d30"
     },
+    "rmarkdown": {
+      "Package": "rmarkdown",
+      "Version": "2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ee0b1e452e8574564cec2ea1ee3113c5"
+    },
     "rprojroot": {
       "Package": "rprojroot",
       "Version": "1.3-2",
@@ -636,6 +657,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4689292a4371650097e5c273284e6bc3"
+    },
+    "tinytex": {
+      "Package": "tinytex",
+      "Version": "0.20",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "2fc15468b2bbac85752ba47975619528"
     },
     "units": {
       "Package": "units",

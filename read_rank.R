@@ -51,7 +51,7 @@ plot_risky_locations <- function(risky_locations) {
 }
 
 dates_of_interest <- c("03-01", "03-05", "03-10", "03-16", "03-22")
-mmdd <- dates_of_interest[4]
+mmdd <- dates_of_interest[3]
 coronaRank <- pagerank_for_dataset(mmdd)
 locationRank <- get_risky_locations(coronaRank, n = -1) %>% # Get all
   dplyr::select(-coeff)
