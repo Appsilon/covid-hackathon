@@ -40,9 +40,14 @@ risk_profile <- function(cases, selected_date) {
   dplyr::select(day, county, weight)
 }
 
-only_nyc <- function() {
-  x <- arrow::read_feather("locationsRank/03-22.feather")
+only_nyc <- function(x = arrow::read_feather("locationsRank/03-22.feather")) {
   ny_state <- get_ny_state_counties() 
+  nyc <- ny_state[ny_state$NAME == "New York",]
+  loc <- data.frame(lon=x$lon, lat=x$lat) %>%
+    st_as_sf(coords = c("lon", "lat"))
+  
+  ids_of_counties <- !is.na(as.numeric(st_intersects(loc, nyc)))
+  x[ids_of_counties, ]
 }
 
 build_ny_counties_risk_profile <- function(date = "2020-03-26") {
