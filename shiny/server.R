@@ -110,6 +110,7 @@ server <- function(input, output, session) {
     shinyjs::runjs("$('#gauge').addClass('show-gauge');")
     profile <- riskProfiles[[input$selectedProfile]]
     leafletProxy("risk_map", data = profile) %>% 
+      clearMarkers() %>%
       addMarkers(
         lng = ~lon,
         lat = ~lat
