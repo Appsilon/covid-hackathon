@@ -1,53 +1,69 @@
 library(ggplot2)
 library(rgdal)
 library(maptools)
+library(sp)
+library(sf)
+library(rgeos)
+library(raster)
+library(dplyr)
 
 fixcountyname <- function(x) {
   ifelse(x == "New York City", "New York", x)  
 }
 
-county <- read.csv("data/us-counties.csv", stringsAsFactors = F) %>%
-  as_tibble() %>%
-  filter(state == "New York") %>%
-  mutate(date = ymd(date)) %>%
-  mutate(county = fixcountyname(county))
-
-risk_profile <- function(selected_date) {
-  day <- county %>% filter(date == selected_date)
-  day$weight <- day$cases/sum(day$cases)
-  select(day, county, weight)
+get_ny_cases <- function() {
+  read.csv("data/us-counties.csv", stringsAsFactors = F) %>%
+    as_tibble() %>%
+    filter(state == "New York") %>%
+    mutate(date = ymd(date)) %>%
+    mutate(county = fixcountyname(county))
 }
 
-rp <- risk_profile(ymd("2020-03-26"))
+get_counties_profile <- function(risk_profile) {
+  nycounties <- read_sf("data/new-york-counties.json") %>% dplyr::select(geometry, NAME)
+  nyc <- c("Richmond", "Kings", "Queens", "Bronx", "New York")
+  merged_ny_counties <- st_sf(geometry = st_union(nycounties[nycounties$NAME %in% nyc,]), NAME = "New York")
+  state_after_merge <- rbind(nycounties[!nycounties$NAME %in% nyc,], merged_ny_counties)
+  
+  assertthat::assert_that(all(risk_profile$county %in% state_after_merge$NAME))
+  state_after_merge$risk_profile <- risk_profile[match(state_after_merge$NAME, risk_profile$county),]$weight
+  state_after_merge
+}
 
-nycounties <- readOGR("data/new-york-counties.json", stringsAsFactors = FALSE)
-nyc <- c("Richmond", "Kings", "Queens", "Bronx", "New York")
-nyccounties <- nycounties[nycounties$NAME %in% nyc,]
-othercounties <- nycounties[!nycounties$NAME %in% nyc,]
-# Strange hack:
-if (!require(gpclib)) install.packages("gpclib", type="source")
-gpclibPermit()
-nycCountySP <- unionSpatialPolygons(nyccounties, rep(1, length(nyccounties)))
-nycData <- nyccounties@data[nyccounties$NAME=="New York",]
-rownames(nycData) <- 1
-nycCounty <- SpatialPolygonsDataFrame(nycCountySP, nycData )
+risk_profile <- function(cases, selected_date) {
+  day <- cases %>% filter(date == selected_date)
+  day$weight <- day$cases/sum(day$cases)
+  dplyr::select(day, county, weight)
+}
 
-allNyc <- rbind(othercounties, nycCounty)
+build_ny_counties_risk_profile <- function(date = "2020-03-26") {
+  ny_cases <- get_ny_cases()
+  rp <- risk_profile(ny_cases, ymd(date))
+  ny_counties <- get_counties_profile(rp)
+}
 
-assert_that(all(rp$county %in% allNyc$NAME))
-allNyc@data$risk_profile <- rp[match(allNyc@data$NAME, rp$county),]$weight
-pal <- colorNumeric("viridis", NULL)
-leaflet(allNyc) %>%
-  addTiles() %>%
-  addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
-              fillColor = ~pal(risk_profile),
-              label = ~paste0(NAME, ": ", formatC(risk_profile, big.mark = ","))) %>%
-  addLegend(pal = pal, values = ~risk_profile, opacity = 1.0,
-            labFormat = labelFormat(transform = function(x) round(10^x)))
+risk_for_locations <- function(risk_profile, geohash) {
+  loc <- gh_decode(geohash) %>%
+   as.data.frame() %>%
+   st_as_sf(coords = c("longitude", "latitude"))
+  
+  ids_of_counties <- as.numeric(st_intersects(loc, risk_profile))
+  risk_profile[ids_of_counties, ]$risk_profile
+}
+
+visualize_risk_profile <- function(spdf) {
+  pal <- colorNumeric("viridis", NULL)
+  leaflet(spdf) %>%
+    addTiles() %>%
+    addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
+                fillColor = ~pal(risk_profile),
+                label = ~paste0(NAME, ": ", formatC(risk_profile, big.mark = ","))) %>%
+    addLegend(pal = pal, values = ~risk_profile, opacity = 1.0,
+              labFormat = labelFormat(transform = function(x) round(10^x)))
+}
 
 
-
-visualize_counties <- function(county) {
+linechart_cases_by_county <- function(county) {
   last_day <- county[county$date == max(county$date), ] %>%
     filter(cases > 10)
   

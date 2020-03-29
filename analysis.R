@@ -1,7 +1,6 @@
 library(arrow)
 library(purrr)
 library(lubridate)
-library(dplyr)
 library(geohashTools)
 library(leaflet)
 library(sp)
@@ -12,16 +11,23 @@ options(mapbox.accessToken = "pk.eyJ1IjoibWR1YmVsIiwiYSI6ImNrNTgweTlwOTAweDczbXB
 
 source("read_data.R")
 source("prep_for_coronarank.R")
+source("weights_init.R")
+source("read_rank.R")
+library(dplyr)
 
 pagerank_for_dataset <- function(mmdd = "12-01") {
-  data <- read_full_data(paste0("veraset-", mmdd))
+  data <- read_full_data(paste0("veraset-", mmdd)) %>%
+    parse_raw_data()
   edges <- data %>%
-    parse_raw_data %>%
-    select(geohash, id) %>%
-    distinct() %>%
-    bidirect_edges()
-  graph <- graph_from_edgelist(edges, directed = TRUE)
-  pr <- page_rank(graph, algo = "prpack", directed = FALSE, damping = 0.99) # weights = NULL)
+    dplyr::select(geohash, id) %>%
+    distinct() 
+  risk_profile <- build_ny_counties_risk_profile()
+  weights_edges <- risk_for_locations(risk_profile, edges$geohash)
+  # TODO: check use of bidirect_edges()
+  graph <- graph_from_edgelist(edges, directed = FALSE)
+  
+  pr <- page_rank(graph, algo = "prpack", directed = FALSE, 
+                  damping = 0.99, weights = weights_edges)
 
   pagerank.out <- tibble(
     node = names(pr$vector),
@@ -49,8 +55,8 @@ data_decoded <- function(dataset) {
 }
 
 # Person with highest CoronaRank for 1st Dec.
-single_data <- single_person(datasets$`12-01`, "53e32cc945f2b12df9a613aa5cd7328c61a6fd3d2465104ed410a07e1d98b789") %>% data_decoded()
+# single_data <- single_person(datasets$`12-01`, "53e32cc945f2b12df9a613aa5cd7328c61a6fd3d2465104ed410a07e1d98b789") %>% data_decoded()
 
-leaflet(single_data) %>% 
-  addMapboxGL(style = "mapbox://styles/mdubel/ck8bl3juq0zvd1iq3h9f1xo70") %>% 
-  addMarkers()
+# leaflet(single_data) %>% 
+#   addMapboxGL(style = "mapbox://styles/mdubel/ck8bl3juq0zvd1iq3h9f1xo70") %>% 
+#   addMarkers()
