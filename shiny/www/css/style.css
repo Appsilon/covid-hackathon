@@ -3,6 +3,20 @@
   padding-right: 0px !important;
 }
 
+#showPopup {
+  z-index: 100;
+  position: absolute;
+  bottom: 3em;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  background: #451077;
+  height: 3em;
+  width: 75%;
+  color: white;
+}
+
 #date {
   position: absolute;
   z-index: 99;
