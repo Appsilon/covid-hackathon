@@ -33,18 +33,23 @@ server <- function(input, output, session) {
   }) 
   
   mapCoronaRank <- function(map, data, penalty) {
-    palett <- colorNumeric("plasma", domain = c(-20, -4))
+    palett <- colorNumeric("viridis", domain = c(-20, -4))
     # "viridis", "magma", "inferno", or "plasma".
     latDist <- 0.005493164
     lonDist <- 0.01098633
+    N <- 3 
+    new_data <- purrrlyr::by_row(data, function(row) {
+      data.frame(lon = row$lon + runif(N, -lonDist/2, lonDist/2),
+                 lat = row$lat + runif(N, -latDist/2, latDist/2),
+                 score = row$score * runif(N, 0.95, 1.05))
+    }) %>% {.$.out} %>% bind_rows()
     map %>%
-      addRectangles(
-        data = data,
-        lng1 = ~ lon - lonDist/2,
-        lng2 = ~ lon + lonDist/2,
-        lat1 = ~ lat - latDist/2,
-        lat2 = ~ lat + latDist/2,
-        fillColor = ~palett(log(score) + penalty),
+      addCircles(
+        data = new_data,
+        lng = ~ lon,
+        lat = ~ lat,
+        radius = 200,
+        fillColor = ~palett((log(score) + penalty)),
         fillOpacity = 0.6,
         color = "transparent"
       )
