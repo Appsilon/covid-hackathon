@@ -21,7 +21,7 @@ prepare_data <- function(frame) {
     mutate(time_window = date(timestamp)) %>%
     mutate(geohash = clean_geohash,
            time = time_window) %>%
-    select(id, time, geohash)
+    dplyr::select(id, time, geohash)
 }
 
 estimate_graph_nodes <- function(data) {
@@ -32,12 +32,3 @@ estimate_graph_nodes <- function(data) {
 bidirect_edges <- function(frame) {
   rbind(frame, setNames(cbind(frame[2], frame[1]), names(frame))) %>% as.matrix
 }
-
-# estimate_graph_nodes(parse_raw_data(data))
-# edges <- data %>%
-#   parse_raw_data %>%
-#   select(geohash, id) %>%
-#   distinct() %>%
-#   bidirect_edges()
-# 
-# write.table(edges, file = "graph0322.txt", quote = F, sep = " ", row.names = F, col.names = F)
