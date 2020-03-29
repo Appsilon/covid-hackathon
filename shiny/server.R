@@ -2,6 +2,11 @@ library(arrow)
 
 server <- function(input, output, session) {
   pageranks <- list()
+  penalty <- list(
+    `03-10` = -3,
+    `03-16` = -1.5,
+    `03-22` = 0
+  )
   feather_files <- list.files("./data", pattern = ".*-.*.feather")
   hard_min <- 8.989015e-08
   hard_max <- 0.01252892
@@ -27,8 +32,8 @@ server <- function(input, output, session) {
     baseMap()
   }) 
   
-  mapCoronaRank <- function(map, data) {
-    palett <- colorNumeric("plasma", domain = c(-17, -4))
+  mapCoronaRank <- function(map, data, penalty) {
+    palett <- colorNumeric("plasma", domain = c(-20, -4))
     # "viridis", "magma", "inferno", or "plasma".
     latDist <- 0.005493164
     lonDist <- 0.01098633
@@ -39,18 +44,16 @@ server <- function(input, output, session) {
         lng2 = ~ lon + lonDist/2,
         lat1 = ~ lat - latDist/2,
         lat2 = ~ lat + latDist/2,
-        fillColor = ~palett(log(score)),
+        fillColor = ~palett(log(score) + penalty),
         fillOpacity = 0.6,
         color = "transparent"
       )
   }
   
-  baseMap() %>% mapCoronaRank(pageranks$`03-22`)
-  
   observe({
     leafletProxy("risk_map") %>% 
       clearShapes() %>%
-      mapCoronaRank(data = data_selected())
+      mapCoronaRank(data = data_selected(), penalty[[substr(input$date, 6, 10)]])
   })
   
   modalContent <- tagList(
