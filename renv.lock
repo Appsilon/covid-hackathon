@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "3.6.2",
+    "Version": "3.6.1",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -177,12 +177,26 @@
       "Repository": "CRAN",
       "Hash": "d160fb3aafcea6c21123814221c74df4"
     },
+    "foreign": {
+      "Package": "foreign",
+      "Version": "0.8-71",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0a3e9cb4f946d20e3ce0eae1ae17c746"
+    },
     "geohashTools": {
       "Package": "geohashTools",
       "Version": "0.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "df6a9073e242c815635aee108735859f"
+    },
+    "geosphere": {
+      "Package": "geosphere",
+      "Version": "1.5-10",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "42410587391d10e8157be4b7acc6480b"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -197,6 +211,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "8001269e82b1d65a5e8e440855695d28"
+    },
+    "gpclib": {
+      "Package": "gpclib",
+      "Version": "1.5-6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "23df93bd7304667ecf64be4ee25970f8"
     },
     "gridExtra": {
       "Package": "gridExtra",
@@ -307,6 +328,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "dee1d97cffddfd3ed969e224bd0826d0"
+    },
+    "maptools": {
+      "Package": "maptools",
+      "Version": "0.9-9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "368c614b419070fd2753fa5ad9b31b93"
     },
     "markdown": {
       "Package": "markdown",
@@ -433,6 +461,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4ee3e91b679fbd7102c1fd51f9a4bc59"
+    },
+    "rgdal": {
+      "Package": "rgdal",
+      "Version": "1.4-8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c98d224ecc4f7608021ef52cdb56030c"
     },
     "rlang": {
       "Package": "rlang",
