@@ -15,29 +15,42 @@ server <- function(input, output, session) {
     pageranks[[feather_date]]
   })
   
-  output$risk_map <- renderLeaflet({
-    # "viridis", "magma", "inferno", or "plasma".
+  baseMap <- function() {
     leaflet() %>%
       addMapboxGL(style = "mapbox://styles/mdubel/ck8de7zi32rax1iql63j5b70g") %>%
       addEasyButton(easyButton(icon="fa-globe", title="Check your risk!",
-        onClick=JS("function(btn, map){ map.setZoom(3); }"))) %>%
+                               onClick=JS("function(btn, map){ map.setZoom(3); }"))) %>%
       setView(lng = -73.8, lat = 40.7, zoom = 11)
+  }
+  
+  output$risk_map <- renderLeaflet({
+    baseMap()
   }) 
   
-  observe({
-    lngShift <- .0
-    latShift <- .0
-    palett <- colorNumeric("viridis", domain = NULL)
-    leafletProxy("risk_map", data = data_selected()) %>% 
-      clearShapes() %>%
-      addCircles(
-        lng = ~ lon + lngShift,
-        lat = ~ lat + latShift,
-        radius = 500,
-        fillColor = "#365c86",#~palett(-log(score)),
-        fillOpacity = ~ score_norm,
+  mapCoronaRank <- function(map, data) {
+    palett <- colorNumeric("plasma", domain = c(-17, -4))
+    # "viridis", "magma", "inferno", or "plasma".
+    latDist <- 0.005493164
+    lonDist <- 0.01098633
+    map %>%
+      addRectangles(
+        data = data,
+        lng1 = ~ lon - lonDist/2,
+        lng2 = ~ lon + lonDist/2,
+        lat1 = ~ lat - latDist/2,
+        lat2 = ~ lat + latDist/2,
+        fillColor = ~palett(log(score)),
+        fillOpacity = 0.6,
         color = "transparent"
       )
+  }
+  
+  baseMap() %>% mapCoronaRank(pageranks$`03-22`)
+  
+  observe({
+    leafletProxy("risk_map") %>% 
+      clearShapes() %>%
+      mapCoronaRank(data = data_selected())
   })
   
   modalContent <- tagList(
