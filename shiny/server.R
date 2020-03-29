@@ -72,7 +72,8 @@ server <- function(input, output, session) {
           max = 1, 
           sectors = gaugeSectors(success = c(0.0, 0.2), 
                                  warning = c(0.21, 0.7),
-                                 danger = c(0.71, 0.9)))
+                                 danger = c(0.71, 0.9),
+                                 colors = c('rgba(54, 92, 134, 0.1)', 'rgba(54, 92, 134, 0.5)', 'rgba(54, 92, 134, 1)')))
   })
   
   riskProfiles <- list(
