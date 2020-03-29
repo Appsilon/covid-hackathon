@@ -3,7 +3,8 @@ library(assertthat)
 parse_raw_data <- function(data) {
   data %>%
     mutate(geohash = geo_hash, id = caid) %>%
-    mutate(timestamp = date(as.Date(as.POSIXct(as.numeric(utc_timestamp), origin="1970-01-01"))))
+    mutate(timestamp = date(as.Date(as.POSIXct(as.numeric(utc_timestamp), origin="1970-01-01")))) %>%
+    dplyr::select(-geo_hash, -caid, -utc_timestamp)
 }
 
 slice_geohash <- function(geohash, meters) {

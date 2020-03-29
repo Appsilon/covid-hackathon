@@ -27,6 +27,7 @@ get_counties_profile <- function(risk_profile) {
   
   assertthat::assert_that(all(risk_profile$county %in% state_after_merge$NAME))
   state_after_merge$risk_profile <- risk_profile[match(state_after_merge$NAME, risk_profile$county),]$weight
+  state_after_merge$risk_profile <- ifelse(is.na(state_after_merge$risk_profile), 0, state_after_merge$risk_profile)
   state_after_merge
 }
 
@@ -51,9 +52,9 @@ risk_for_locations <- function(risk_profile, geohash) {
   risk_profile[ids_of_counties, ]$risk_profile
 }
 
-visualize_risk_profile <- function(spdf) {
+visualize_risk_profile <- function(county) {
   pal <- colorNumeric("viridis", NULL)
-  leaflet(spdf) %>%
+  leaflet(county) %>%
     addTiles() %>%
     addPolygons(stroke = FALSE, smoothFactor = 0.3, fillOpacity = 1,
                 fillColor = ~pal(risk_profile),

@@ -4,6 +4,7 @@ library(lubridate)
 library(geohashTools)
 library(leaflet)
 library(sp)
+library(igraph)
 # remotes::install_github("rstudio/leaflet.mapboxgl")
 library(leaflet.mapboxgl)
 
@@ -23,17 +24,20 @@ pagerank_for_dataset <- function(mmdd = "12-01") {
     distinct() 
   risk_profile <- build_ny_counties_risk_profile()
   weights_edges <- risk_for_locations(risk_profile, edges$geohash)
+  # TODO: markers at the edges get NA - I'm removing them from data
+  skip <- is.na(weights_edges)
+  
   # TODO: check use of bidirect_edges()
-  graph <- graph_from_edgelist(edges, directed = FALSE)
+  graph <- graph_from_edgelist(as.matrix(edges[!skip, ]), directed = FALSE)
   
   pr <- page_rank(graph, algo = "prpack", directed = FALSE, 
-                  damping = 0.99, weights = weights_edges)
+                  damping = 0.99, weights = weights_edges[!skip])
 
   pagerank.out <- tibble(
     node = names(pr$vector),
     score = pr$vector
   ) %>%
-    mutate(coeff = pagerank.out$score*100000)
+    mutate(coeff = score*100000)
 }
 
 select_folks <- function(data, id) {
@@ -55,8 +59,11 @@ data_decoded <- function(dataset) {
 }
 
 # Person with highest CoronaRank for 1st Dec.
-# single_data <- single_person(datasets$`12-01`, "53e32cc945f2b12df9a613aa5cd7328c61a6fd3d2465104ed410a07e1d98b789") %>% data_decoded()
+uid <- "52cdc97c2ed5b8915426a1aad3d184b27b0639ac4da564c4ebb790944916f595"
+single_data <- data[data$id == uid, ]
 
-# leaflet(single_data) %>% 
-#   addMapboxGL(style = "mapbox://styles/mdubel/ck8bl3juq0zvd1iq3h9f1xo70") %>% 
-#   addMarkers()
+# %>% data_decoded()
+loc <- gh_decode(single_data$geohash)
+leaflet() %>% 
+  addMapboxGL(style = "mapbox://styles/mdubel/ck8bl3juq0zvd1iq3h9f1xo70") %>% 
+  addMarkers(lng = loc$longitude, lat = loc$latitude)
