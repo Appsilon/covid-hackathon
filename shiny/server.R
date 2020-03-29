@@ -2,7 +2,7 @@ library(arrow)
 
 server <- function(input, output, session) {
   pageranks <- list()
-  feather_files <- list.files("./data", pattern = "*.feather")
+  feather_files <- list.files("./data", pattern = ".*-.*.feather")
   for(file in feather_files) {
     name <- gsub(".feather", "", file)
     pageranks[[name]] <- arrow::read_feather(glue::glue("./data/{file}")) %>%
@@ -67,9 +67,9 @@ server <- function(input, output, session) {
   })
   
   riskProfiles <- list(
-    # low = arrow::read_feather(glue::glue("./data/low.feather")),
-    # medium = arrow::read_feather(glue::glue("./data/medium.feather")),
-    # high = arrow::read_feather(glue::glue("./data/high.feather"))
+    low = arrow::read_feather(glue::glue("./data/low.feather")),
+    medium = arrow::read_feather(glue::glue("./data/medium.feather")),
+    high = arrow::read_feather(glue::glue("./data/high.feather"))
   )
   
   observeEvent(input$startUpload, {

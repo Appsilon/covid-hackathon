@@ -64,6 +64,22 @@ data_decoded <- function(dataset) {
 # uid <- "52cdc97c2ed5b8915426a1aad3d184b27b0639ac4da564c4ebb790944916f595"
 # uid <- "7bce66e8d1d08582631622d4a15b4ac1f0702464f241a90c2850bbc6a65ae0dc"
 # single_data <- data[data$id == uid, ]
+data <- read_full_data()
+low_uid <- "c8a5f7e9bc1bf28f49dd53eb121fe5c3c051cf821e91a2b75b122faf4f52ca50"
+med_uid <- "ad5f54d562e006bc8d9a4ac6577d87108c1942c397b20bb35f8e9d26877e82a4"
+high_uid <- "513410b953b0af6a81d39263dd1f4b51cde2dd365e713d619a9a343feb4f5e9c"
+cache_single_user <- function(uid, name) {
+  single_data <- data[data$caid == uid, ] %>% 
+    parse_raw_data() %>% prepare_data()
+  loc <- gh_decode(single_data$geohash)
+  single_data %>%
+    mutate(lat = loc$latitude, lon = loc$longitude) %>%
+    dplyr::select(-geohash, -time) %>%
+    arrow::write_feather(sink = glue("shiny/data/{name}.feather"))
+}
+cache_single_user(low_uid, "low")
+cache_single_user(med_uid, "medium")
+cache_single_user(high_uid, "high")
 
 # %>% data_decoded()
 # loc <- gh_decode(single_data$geohash)
