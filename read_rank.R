@@ -47,12 +47,12 @@ plot_risky_locations <- function(risky_locations) {
 
 
 
-dates_of_interest <- c("12-01", "03-01", "03-22")
-datasets <- list("12-01" = read_full_data("veraset-12-01"))
-pageranks <- list( "12-01" = pagerank_for_dataset("12-01") )
-risky_loc <- list( "12-01" = get_risky_locations(pageranks$`12-01`) )
-risky_folks <- list( "12-01" = get_risky_folks(pageranks$`12-01`) )
-plot_risky_locations(risky$`12-01`)
+# dates_of_interest <- c("12-01", "03-01", "03-22")
+# datasets <- list("12-01" = read_full_data("veraset-12-01"))
+# pageranks <- list( "12-01" = pagerank_for_dataset("12-01") )
+# risky_loc <- list( "12-01" = get_risky_locations(pageranks$`12-01`) )
+# risky_folks <- list( "12-01" = get_risky_folks(pageranks$`12-01`) )
+# plot_risky_locations(risky$`12-01`)
 
 # <- dates_of_interest %>%
 #   map(pagerank_for_dataset) %>%
