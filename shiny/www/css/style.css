@@ -2,3 +2,20 @@
   padding-left: 0px !important;
   padding-right: 0px !important;
 }
+
+#date {
+  position: absolute;
+  z-index: 99;
+  left: 55px;
+  top: 10px;
+  width: 215px;
+}
+
+.form-control:hover {
+  background-color: #f4f4f4;
+}
+
+.form-control {
+  border: 2px solid rgb(0,0,0);
+  border: 2px solid rgba(0,0,0,0.2);
+}
