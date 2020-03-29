@@ -1,0 +1,12 @@
+name: coronarank-ny2
+title: coronarank-ny
+username: filip
+account: filip
+server: internal.appsilon.ai
+hostUrl: http://internal.appsilon.ai/__api__
+appId: 78
+bundleId: 221
+url: http://internal.appsilon.ai/content/78/
+when: 1585504089.81511
+asMultiple: FALSE
+asStatic: FALSE
