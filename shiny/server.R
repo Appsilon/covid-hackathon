@@ -57,22 +57,22 @@ server <- function(input, output, session) {
   })
   
   modalContent <- tagList(
-    p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and became contagious – your CoronaRank."),
+    p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and become contagious."),
     a(href = "https://takeout.google.com/settings/takeout", img(src="google.png", style = "border: 1px solid gray")),
     a(style = "float:right; width: 45%", href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
     p(),
     div(style = "padding:0 2em",
       navlistPanel(id = "selectedProfile",
-        tabPanel(value = "low", "Low – time outside limited to basic necessities"), 
+        tabPanel(value = "high", "High – you got out of the house a lot, used public transport, visited cafes, restaurants, etc."),
         tabPanel(value = "medium", "Medium – moderate daily activities, no social interactions in public spaces"),
-        tabPanel(value = "high", "High – you got out of the house a lot, used public transport, visited cafes, restaurants, etc.")
+        tabPanel(value = "low", "Low – time outside limited to basic necessities")
       )
     )
   )
   
   observeEvent(input$showPopup, {
     showModal(modalDialog(
-      title = "Check your CoronaRank",
+      title = "Check your Risk Score",
       modalContent,
       footer = tagList(
         modalButton("Maybe later"),
