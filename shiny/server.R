@@ -39,8 +39,8 @@ server <- function(input, output, session) {
         lng2 = ~ lon + lonDist/2,
         lat1 = ~ lat - latDist/2,
         lat2 = ~ lat + latDist/2,
-        fillColor = ~palett(log(score)),
-        fillOpacity = 0.6,
+        fillColor = 'rgb(54, 92, 134)', #~palett(log(score)), 
+        fillOpacity = ~ (score_norm*8 ),#0.6,
         color = "transparent"
       )
   }
@@ -58,10 +58,10 @@ server <- function(input, output, session) {
     a(href = "https://takeout.google.com/settings/takeout", img(src="google.png", style = "border: 1px solid gray")),
     a(href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
     div(style = "padding:0 2em",
-      navlistPanel(id = "selectedProfile",
-        tabPanel(value = "low", "Low – time outside limited to basic necessities"), 
-        tabPanel(value = "medium", "Medium – moderate daily activities, no social interactions in public spaces"),
-        tabPanel(value = "high", "High – you got out of the house a lot, used public transport, visited cafes, restaurants, etc.")
+      navlistPanel(id = "selectedProfile", widths = c(12, 12),
+        tabPanel(title = "Low", value = "low", "Time outside limited to basic necessities"), 
+        tabPanel(title = "Medium", value = "medium", "Moderate daily activities, no social interactions in public spaces"),
+        tabPanel(title = "High", value = "high", "You got out of the house a lot, used public transport, visited cafes, restaurants, etc.")
       )
     )
   )
