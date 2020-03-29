@@ -54,7 +54,7 @@ dates_of_interest <- c("03-01", "03-05", "03-10", "03-16", "03-22")
 mmdd <- dates_of_interest[2]
 coronaRank <- pagerank_for_dataset(mmdd)
 locationRank <- get_risky_locations(coronaRank, n = -1) %>% # Get all
-  select(-coeff)
+  dplyr::select(-coeff)
 write_feather(locationRank, glue("locationsRank/{mmdd}.feather"))
 
 # datasets <- list("12-01" = read_full_data("veraset-12-01"))
