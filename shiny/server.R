@@ -35,4 +35,27 @@ server <- function(input, output, session) {
         color = "transparent"
       )
   })
+  
+  modalContent <- tagList(
+    p("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. interdum, dui ligula ultricies purus, sed posuere libero dui id orci."),
+    p("Something about Google takeout?"),
+    div(style = "padding:0 2em",
+      navlistPanel(
+        tabPanel("Risky profile", "explenation"), 
+        tabPanel("Medium", "etc etc ontents"),
+        tabPanel("Low risk profile", "other contents")
+      )
+    )
+  )
+  
+  observeEvent(input$showPopup, {
+    showModal(modalDialog(
+      title = "Important message",
+      modalContent,
+      footer = tagList(
+        modalButton("Maybe later"),
+        actionButton("startUpload", "Check my data")
+      )
+    ))
+  })
 }
