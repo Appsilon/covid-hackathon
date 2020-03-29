@@ -1,3 +1,5 @@
+library(arrow)
+
 server <- function(input, output, session) {
   pageranks <- list()
   feather_files <- list.files("./data", pattern = "*.feather")
@@ -41,9 +43,9 @@ server <- function(input, output, session) {
     p("Something about Google takeout?"),
     div(style = "padding:0 2em",
       navlistPanel(
-        tabPanel("Risky profile", "explenation"), 
-        tabPanel("Medium", "etc etc ontents"),
-        tabPanel("Low risk profile", "other contents")
+        tabPanel("Low Risk", "explanation"), 
+        tabPanel("Medium Risk", "etc etc ontents"),
+        tabPanel("High Risk", "other contents")
       )
     )
   )
@@ -57,5 +59,9 @@ server <- function(input, output, session) {
         actionButton("startUpload", "Check my data")
       )
     ))
+  })
+  
+  observeEvent(input$startUpload, {
+    print("starting upload")
   })
 }

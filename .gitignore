@@ -2,3 +2,4 @@ private
 graph*.txt
 veraset-*
 .Rproj.user
+shiny/rsconnect
