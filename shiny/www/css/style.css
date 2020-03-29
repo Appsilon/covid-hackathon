@@ -39,3 +39,13 @@
   border: 2px solid rgba(0,0,0,0.2);
   background-clip: padding-box;
 }
+
+#gauge {
+  width: 10% !important;
+  height: 200px !important;
+  visibility: inherit;
+  position: absolute;
+  left: 17vh;
+  top: 6vh;
+  z-index: 99;
+}
