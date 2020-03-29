@@ -1,26 +1,38 @@
 server <- function(input, output, session) {
-  #pageranks <- list( "12-01" = pagerank_for_dataset("12-01") )
-  #risky_loc <- list( "12-01" = get_risky_locations(pageranks$`12-01`) )
+  pageranks <- list()
+  feather_files <- list.files("./data", pattern = "*.feather")
+  for(file in feather_files) {
+    name <- gsub(".feather", "", file)
+    pageranks[[name]] <- read_feather(glue::glue("./data/{file}")) %>% dplyr::filter(score > 0.5)
+  }
+
   data_selected <- reactive({
-    if(input$date == "2020-03-26")
-      list(lng = 174.768, lat = -36.852)
-    else if(input$date == "2020-03-25")
-      list(lng = 173.768, lat = -37.852)
+    feather_date <- substr(input$date, 6, 10)
+    pageranks[[feather_date]]
   })
   
   output$risk_map <- renderLeaflet({
-    #plot_risky_locations(risky_loc$`12-01`)
+    # "viridis", "magma", "inferno", or "plasma".
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(lng = 174.768, lat = -36.852, radius = 3900) %>% 
       addEasyButton(easyButton(icon="fa-globe", title="Check your risk!",
         onClick=JS("function(btn, map){ map.setZoom(1); }"))) %>%
-      setView(lng = 174.768, lat = -36.852, zoom = 8)
+      setView(lng = -73.8, lat = 40.7, zoom = 12)
   }) 
   
   observe({
-    leafletProxy("risk_map") %>% 
+    lngShift <- .0
+    latShift <- .0
+    palett <- colorNumeric("viridis", domain = NULL)
+    leafletProxy("risk_map", data = data_selected()) %>% 
       clearShapes() %>% 
-      addCircles(lng = data_selected()$lng, lat = data_selected()$lat, radius = 3900)
+      addCircles(
+        lng = ~ lon + lngShift,
+        lat = ~ lat + latShift,
+        radius = 300,
+        fillColor = ~palett(score),
+        fillOpacity = 0.75,
+        color = "transparent"
+      )
   })
 }
