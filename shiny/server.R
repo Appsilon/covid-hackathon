@@ -2,7 +2,7 @@ library(arrow)
 
 server <- function(input, output, session) {
   pageranks <- list()
-  feather_files <- list.files("./data", pattern = "*.feather")
+  feather_files <- list.files("./data", pattern = ".*-.*.feather")
   hard_min <- 8.989015e-08
   hard_max <- 0.01252892
   for(file in feather_files) {
@@ -76,9 +76,9 @@ server <- function(input, output, session) {
   })
   
   riskProfiles <- list(
-    # low = arrow::read_feather(glue::glue("./data/low.feather")),
-    # medium = arrow::read_feather(glue::glue("./data/medium.feather")),
-    # high = arrow::read_feather(glue::glue("./data/high.feather"))
+    low = arrow::read_feather(glue::glue("./data/low.feather")),
+    medium = arrow::read_feather(glue::glue("./data/medium.feather")),
+    high = arrow::read_feather(glue::glue("./data/high.feather"))
   )
   
   observeEvent(input$startUpload, {

@@ -23,8 +23,8 @@ get_risky_locations <- function(pagerank, ...) {
            lon = risky_locations$longitude)
 }
 
-get_risky_folks <- function(pagerank) {
-  get_risky_by_predicate(pagerank, function(node) nchar(node) > 60)
+get_risky_folks <- function(pagerank, ...) {
+  get_risky_by_predicate(pagerank, function(node) nchar(node) > 60, ...)
 }
 
 plot_risky_locations <- function(risky_locations) {
@@ -55,6 +55,9 @@ mmdd <- dates_of_interest[3]
 coronaRank <- pagerank_for_dataset(mmdd)
 locationRank <- get_risky_locations(coronaRank, n = -1) %>% # Get all
   dplyr::select(-coeff)
+
+folksRank <- get_risky_folks(coronaRank, n = -1)
+
 write_feather(locationRank, glue("locationsRank/{mmdd}.feather"))
 
 # datasets <- list("12-01" = read_full_data("veraset-12-01"))
