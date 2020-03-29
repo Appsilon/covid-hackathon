@@ -3,13 +3,14 @@ library(arrow)
 server <- function(input, output, session) {
   pageranks <- list()
   feather_files <- list.files("./data", pattern = "*.feather")
+  hard_min <- 8.989015e-08
+  hard_max <- 0.01252892
   for(file in feather_files) {
     name <- gsub(".feather", "", file)
     pageranks[[name]] <- arrow::read_feather(glue::glue("./data/{file}")) %>%
       only_nyc() %>% 
-      mutate(score_norm = (score - min(.$score)) / (max(.$score) - min(.$score)))
+      mutate(score_norm = (score - hard_min) / (hard_max - hard_min))
   }
-
   data_selected <- reactive({
     feather_date <- substr(input$date, 6, 10)
     pageranks[[feather_date]]
