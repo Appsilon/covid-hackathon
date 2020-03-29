@@ -8,7 +8,6 @@ server <- function(input, output, session) {
   for(file in feather_files) {
     name <- gsub(".feather", "", file)
     pageranks[[name]] <- arrow::read_feather(glue::glue("./data/{file}")) %>%
-      only_nyc() %>% 
       mutate(score_norm = (score - hard_min) / (hard_max - hard_min))
   }
   data_selected <- reactive({
