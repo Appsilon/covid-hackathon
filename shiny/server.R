@@ -2,6 +2,11 @@ library(arrow)
 
 server <- function(input, output, session) {
   pageranks <- list()
+  penalty <- list(
+    `03-10` = -3,
+    `03-16` = -1.5,
+    `03-22` = 0
+  )
   feather_files <- list.files("./data", pattern = ".*-.*.feather")
   hard_min <- 8.989015e-08
   hard_max <- 0.01252892
@@ -27,8 +32,8 @@ server <- function(input, output, session) {
     baseMap()
   }) 
   
-  mapCoronaRank <- function(map, data) {
-    palett <- colorNumeric("plasma", domain = c(-17, -4))
+  mapCoronaRank <- function(map, data, penalty) {
+    palett <- colorNumeric("plasma", domain = c(-20, -4))
     # "viridis", "magma", "inferno", or "plasma".
     latDist <- 0.005493164
     lonDist <- 0.01098633
@@ -39,36 +44,35 @@ server <- function(input, output, session) {
         lng2 = ~ lon + lonDist/2,
         lat1 = ~ lat - latDist/2,
         lat2 = ~ lat + latDist/2,
-        fillColor = 'rgb(54, 92, 134)', #~palett(log(score)), 
-        fillOpacity = ~ (score_norm*8 ),#0.6,
+        fillColor = ~palett(log(score) + penalty),
+        fillOpacity = 0.6,
         color = "transparent"
       )
   }
   
-  baseMap() %>% mapCoronaRank(pageranks$`03-22`)
-  
   observe({
     leafletProxy("risk_map") %>% 
       clearShapes() %>%
-      mapCoronaRank(data = data_selected())
+      mapCoronaRank(data = data_selected(), penalty[[substr(input$date, 6, 10)]])
   })
   
   modalContent <- tagList(
-    p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and became contagious – your CoronaRank."),
+    p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and become contagious."),
     a(href = "https://takeout.google.com/settings/takeout", img(src="google.png", style = "border: 1px solid gray")),
-    a(href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
+    a(style = "float:right; width: 45%", href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
+    p(),
     div(style = "padding:0 2em",
-      navlistPanel(id = "selectedProfile", widths = c(12, 12),
-        tabPanel(title = "Low", value = "low", "Time outside limited to basic necessities"), 
-        tabPanel(title = "Medium", value = "medium", "Moderate daily activities, no social interactions in public spaces"),
-        tabPanel(title = "High", value = "high", "You got out of the house a lot, used public transport, visited cafes, restaurants, etc.")
+        navlistPanel(id = "selectedProfile", widths = c(12, 12),
+                     tabPanel(title = "High", value = "high", "You got out of the house a lot, used public transport, visited cafes, restaurants, etc."),
+                     tabPanel(title = "Medium", value = "medium", "Moderate daily activities, no social interactions in public spaces"),
+                     tabPanel(title = "Low", value = "low", "Time outside limited to basic necessities")    
       )
     )
   )
   
   observeEvent(input$showPopup, {
     showModal(modalDialog(
-      title = "Check your CoronaRank",
+      title = "Check your Risk Score",
       modalContent,
       footer = tagList(
         modalButton("Maybe later"),
@@ -109,6 +113,7 @@ server <- function(input, output, session) {
     shinyjs::runjs("$('#gauge').addClass('show-gauge');")
     profile <- riskProfiles[[input$selectedProfile]]
     leafletProxy("risk_map", data = profile) %>% 
+      clearMarkers() %>%
       addMarkers(
         lng = ~lon,
         lat = ~lat
