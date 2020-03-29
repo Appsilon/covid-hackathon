@@ -1,5 +1,6 @@
 library(shiny)
 library(leaflet)
+library(leaflet.mapboxgl)
 library(dplyr)
 library(arrow)
 
