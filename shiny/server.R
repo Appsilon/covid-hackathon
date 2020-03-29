@@ -80,12 +80,13 @@ server <- function(input, output, session) {
   })
   
   output$gauge = renderGauge({
-    gauge(0.7, 
+    gauge(risk_score(), 
           min = 0, 
           max = 1, 
-          sectors = gaugeSectors(success = c(0.5, 1), 
-                                 warning = c(0.3, 0.5),
-                                 danger = c(0, 0.3)))
+          sectors = gaugeSectors(success = c(0.0, 0.2), 
+                                 warning = c(0.21, 0.7),
+                                 danger = c(0.71, 0.9),
+                                 colors = c('rgba(54, 92, 134, 0.1)', 'rgba(54, 92, 134, 0.5)', 'rgba(54, 92, 134, 1)')))
   })
   
   riskProfiles <- list(
@@ -94,8 +95,18 @@ server <- function(input, output, session) {
     high = arrow::read_feather(glue::glue("./data/high.feather"))
   )
   
+  risk_score <- reactive({
+    if(input$selectedProfile == "low")
+      0.1
+    else if(input$selectedProfile == "medium")
+      0.4
+    else if(input$selectedProfile == "high")
+      0.9
+  })
+  
   observeEvent(input$startUpload, {
     removeModal()
+    shinyjs::runjs("$('#gauge').addClass('show-gauge');")
     profile <- riskProfiles[[input$selectedProfile]]
     leafletProxy("risk_map", data = profile) %>% 
       addMarkers(

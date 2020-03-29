@@ -39,3 +39,18 @@
   border: 2px solid rgba(0,0,0,0.2);
   background-clip: padding-box;
 }
+
+#gauge {
+  width: 10% !important;
+  height: 200px !important;
+  display: none;
+  position: absolute;
+  left: 5%;
+  top: 3%;
+  z-index: 99;
+}
+
+.show-gauge {
+  visibility: visible !important;
+  display: inherit !important;
+}
