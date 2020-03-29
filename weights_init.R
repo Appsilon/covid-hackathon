@@ -19,22 +19,35 @@ get_ny_cases <- function() {
     mutate(county = fixcountyname(county))
 }
 
-get_counties_profile <- function(risk_profile) {
+get_ny_state_counties <- function() {
   nycounties <- read_sf("data/new-york-counties.json") %>% dplyr::select(geometry, NAME)
   nyc <- c("Richmond", "Kings", "Queens", "Bronx", "New York")
   merged_ny_counties <- st_sf(geometry = st_union(nycounties[nycounties$NAME %in% nyc,]), NAME = "New York")
-  state_after_merge <- rbind(nycounties[!nycounties$NAME %in% nyc,], merged_ny_counties)
-  
-  assertthat::assert_that(all(risk_profile$county %in% state_after_merge$NAME))
-  state_after_merge$risk_profile <- risk_profile[match(state_after_merge$NAME, risk_profile$county),]$weight
-  state_after_merge$risk_profile <- ifelse(is.na(state_after_merge$risk_profile), 0, state_after_merge$risk_profile)
-  state_after_merge
+  rbind(nycounties[!nycounties$NAME %in% nyc,], merged_ny_counties)
+}
+
+get_counties_profile <- function(risk_profile) {
+  ny_state <- get_ny_state_counties()
+  assertthat::assert_that(all(risk_profile$county %in% ny_state$NAME))
+  ny_state$risk_profile <- risk_profile[match(ny_state$NAME, risk_profile$county),]$weight
+  ny_state$risk_profile <- ifelse(is.na(ny_state$risk_profile), 0, ny_state$risk_profile)
+  ny_state
 }
 
 risk_profile <- function(cases, selected_date) {
   day <- cases %>% filter(date == selected_date)
   day$weight <- day$cases/sum(day$cases)
   dplyr::select(day, county, weight)
+}
+
+only_nyc <- function(x = arrow::read_feather("locationsRank/03-22.feather")) {
+  ny_state <- get_ny_state_counties() 
+  nyc <- ny_state[ny_state$NAME == "New York",]
+  loc <- data.frame(lon=x$lon, lat=x$lat) %>%
+    st_as_sf(coords = c("lon", "lat"))
+  
+  ids_of_counties <- !is.na(as.numeric(st_intersects(loc, nyc)))
+  x[ids_of_counties, ]
 }
 
 build_ny_counties_risk_profile <- function(date = "2020-03-26") {
