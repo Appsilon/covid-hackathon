@@ -5,7 +5,7 @@ server <- function(input, output, session) {
   feather_files <- list.files("./data", pattern = "*.feather")
   for(file in feather_files) {
     name <- gsub(".feather", "", file)
-    pageranks[[name]] <- read_feather(glue::glue("./data/{file}")) %>% dplyr::filter(score > 0.5)
+    pageranks[[name]] <- arrow::read_feather(glue::glue("./data/{file}"))
   }
 
   data_selected <- reactive({
@@ -18,7 +18,7 @@ server <- function(input, output, session) {
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addEasyButton(easyButton(icon="fa-globe", title="Check your risk!",
-        onClick=JS("function(btn, map){ map.setZoom(1); }"))) %>%
+        onClick=JS("function(btn, map){ map.setZoom(3); }"))) %>%
       setView(lng = -73.8, lat = 40.7, zoom = 12)
   }) 
   
@@ -27,12 +27,12 @@ server <- function(input, output, session) {
     latShift <- .0
     palett <- colorNumeric("viridis", domain = NULL)
     leafletProxy("risk_map", data = data_selected()) %>% 
-      clearShapes() %>% 
+      clearShapes() %>%
       addCircles(
         lng = ~ lon + lngShift,
         lat = ~ lat + latShift,
         radius = 300,
-        fillColor = ~palett(score),
+        fillColor = ~palett(-log(score)),
         fillOpacity = 0.75,
         color = "transparent"
       )
