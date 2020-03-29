@@ -11,8 +11,10 @@ server <- function(input, output, session) {
   output$risk_map <- renderLeaflet({
     #plot_risky_locations(risky_loc$`12-01`)
     leaflet() %>%
-      addTiles() %>% 
+      addProviderTiles(providers$CartoDB.Positron) %>%
       addCircles(lng = 174.768, lat = -36.852, radius = 3900) %>% 
+      addEasyButton(easyButton(icon="fa-globe", title="Check your risk!",
+        onClick=JS("function(btn, map){ map.setZoom(1); }"))) %>%
       setView(lng = 174.768, lat = -36.852, zoom = 8)
   }) 
   
