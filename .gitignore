@@ -3,3 +3,4 @@ graph*.txt
 veraset-*
 .Rproj.user
 shiny/rsconnect
+.DS_Store

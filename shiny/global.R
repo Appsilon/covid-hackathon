@@ -3,5 +3,6 @@ library(leaflet)
 library(leaflet.mapboxgl)
 library(dplyr)
 library(arrow)
+library(flexdashboard)
 
 options(mapbox.accessToken = "pk.eyJ1IjoibWR1YmVsIiwiYSI6ImNrNTgweTlwOTAweDczbXBneTJtNTA2Y2UifQ.kIHidFuI7ooK0KU5yigvqg")

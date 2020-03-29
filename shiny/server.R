@@ -66,6 +66,15 @@ server <- function(input, output, session) {
     ))
   })
   
+  output$gauge = renderGauge({
+    gauge(0.7, 
+          min = 0, 
+          max = 1, 
+          sectors = gaugeSectors(success = c(0.5, 1), 
+                                 warning = c(0.3, 0.5),
+                                 danger = c(0, 0.3)))
+  })
+  
   riskProfiles <- list(
     # low = arrow::read_feather(glue::glue("./data/low.feather")),
     # medium = arrow::read_feather(glue::glue("./data/medium.feather")),
