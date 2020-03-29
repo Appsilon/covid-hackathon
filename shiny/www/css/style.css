@@ -3,6 +3,11 @@
   padding-right: 0px !important;
 }
 
+#startUpload {
+  background: #29bfa4;
+  color: white;
+}
+
 #showPopup {
   z-index: 100;
   position: absolute;
