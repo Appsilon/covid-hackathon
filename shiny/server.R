@@ -6,7 +6,8 @@ server <- function(input, output, session) {
   for(file in feather_files) {
     name <- gsub(".feather", "", file)
     pageranks[[name]] <- arrow::read_feather(glue::glue("./data/{file}")) %>%
-      dplyr::filter(between(lon, -74.05, -73.379), lat < 41)
+      only_nyc() %>% 
+      mutate(score_norm = (score - min(.$score)) / (max(.$score) - min(.$score)))
   }
 
   data_selected <- reactive({
@@ -32,9 +33,9 @@ server <- function(input, output, session) {
       addCircles(
         lng = ~ lon + lngShift,
         lat = ~ lat + latShift,
-        radius = 300,
-        fillColor = ~palett(-log(score)),
-        fillOpacity = 0.75,
+        radius = 500,
+        fillColor = "#365c86",#~palett(-log(score)),
+        fillOpacity = ~ score_norm,
         color = "transparent"
       )
   })
