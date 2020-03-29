@@ -56,7 +56,8 @@ server <- function(input, output, session) {
   modalContent <- tagList(
     p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and became contagious – your CoronaRank."),
     a(href = "https://takeout.google.com/settings/takeout", img(src="google.png", style = "border: 1px solid gray")),
-    a(href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
+    a(style = "float:right; width: 45%", href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
+    p(),
     div(style = "padding:0 2em",
       navlistPanel(id = "selectedProfile",
         tabPanel(value = "low", "Low – time outside limited to basic necessities"), 
