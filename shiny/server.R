@@ -57,15 +57,22 @@ server <- function(input, output, session) {
   })
   
   modalContent <- tagList(
-    p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and become contagious."),
-    a(href = "https://takeout.google.com/settings/takeout", img(src="google.png", style = "border: 1px solid gray")),
-    a(style = "float:right; width: 45%", href = "https://privacy.apple.com/", img(src="apple.png", style = "border: 1px solid gray")),
-    p(),
-    div(style = "padding:0 2em",
-        navlistPanel(id = "selectedProfile", widths = c(12, 12),
-                     tabPanel(title = "High", value = "high", "You got out of the house a lot, used public transport, visited cafes, restaurants, etc."),
-                     tabPanel(title = "Medium", value = "medium", "Moderate daily activities, no social interactions in public spaces"),
-                     tabPanel(title = "Low", value = "low", "Time outside limited to basic necessities")    
+    div(
+      p("Choose one of the following three movement patterns that best describes your activity outside of your house over the last two weeks. We will tell you how likely it is that you might have caught the virus and become contagious."),
+      span(
+        a(href = "https://takeout.google.com/settings/takeout",
+          img(src="google.png"), style = "width: 50%; margin-left: 10px;"),#"float: left; "),
+        a(style = "float:right; width: 45%", href = "https://privacy.apple.com/",
+          img(src="apple.png"), style = "width: 50%; margin-right: 10px;")#"float: right; margin-right: 10px;")
+      ),
+      br(),
+      p(),
+      div(style = "padding:0 2em",
+          navlistPanel(id = "selectedProfile", widths = c(12, 12),
+                       tabPanel(title = "High", value = "high", "You got out of the house a lot, used public transport, visited cafes, restaurants, etc."),
+                       tabPanel(title = "Medium", value = "medium", "Moderate daily activities, no social interactions in public spaces"),
+                       tabPanel(title = "Low", value = "low", "Time outside limited to basic necessities")    
+          )
       )
     )
   )
@@ -77,7 +84,7 @@ server <- function(input, output, session) {
       footer = tagList(
         modalButton("Maybe later"),
         actionButton("startUpload", "Check me"),
-        br(),
+        br(), br(),
         p(style = "text-align: left; font-size: 0.8em;", "Your data including the CoronaRank is private and will not be shared with anyone.")
       )
     ))
