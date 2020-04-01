@@ -33,7 +33,9 @@ server <- function(input, output, session) {
   }) 
   
   mapCoronaRank <- function(map, data, penalty) {
-    palett <- colorNumeric("viridis", domain = c(-20, -4))
+    # palett_domain ← range()
+    palett <- colorNumeric(colorRamp(c('white', 'yellow', 'orange', 'red')), c(-20, -4))
+      # colorNumeric("viridis", domain = c(-20, -4))
     # "viridis", "magma", "inferno", or "plasma".
     latDist <- 0.005493164
     lonDist <- 0.01098633
@@ -54,6 +56,8 @@ server <- function(input, output, session) {
         color = "transparent"
       )
   }
+  
+  baseMap() %>% mapCoronaRank(pageranks$`03-22`, penalty$`03-22`)
   
   observe({
     leafletProxy("risk_map") %>% 
