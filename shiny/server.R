@@ -1,6 +1,9 @@
 library(arrow)
 
 server <- function(input, output, session) {
+  waiter_show( # show the waiter
+    html = spin_fading_circles() # use a spinner
+  )
   pageranks <- list()
   penalty <- list(
     `03-10` = -3,
@@ -28,9 +31,29 @@ server <- function(input, output, session) {
       setView(lng = -73.8, lat = 40.7, zoom = 11)
   }
   
-  output$risk_map <- renderLeaflet({
-    baseMap()
-  }) 
+  #Using shinywidgets
+  # addSpinner(
+  #   output$risk_map <- renderLeaflet({baseMap()}),
+  #   spin = "cube",
+  #   color = "blue"
+  # )
+  
+  #Using shinycssloader
+  # modalDialog(
+  #   withSpinner(
+  #     tagList(  #add loader to this map
+  #     output$risk_map <- renderLeaflet({baseMap()})
+  #     ),
+  #   type = 4,
+  #   color = "orange",
+  #   size = 2
+  # )
+  # )
+  
+    # Sys.sleep(0.3)
+    output$risk_map <- renderLeaflet({baseMap()})
+ 
+  
   
   mapCoronaRank <- function(map, data, penalty) {
     # palett_domain ← range()
@@ -137,4 +160,6 @@ server <- function(input, output, session) {
         lat = ~lat
       )
   })
+  
+  waiter_hide()
 }
