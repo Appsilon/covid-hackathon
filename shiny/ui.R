@@ -5,6 +5,7 @@ ui <- fluidPage(title = "Community Shield",
     tags$link(rel = "stylesheet", type = "text/css", href = "css/style.css")
   ),
   useShinyjs(),
+  use_waiter(), # New line added to use this package
   dateInput("date", label = NULL, value = "2020-03-22",
             min = "2020-03-01", max = "2020-03-31", datesdisabled = paste0("2020-03-", c(1:9, 11:15, 17:21, 23:31))),
   gaugeOutput("gauge"),
