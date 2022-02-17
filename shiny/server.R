@@ -20,6 +20,10 @@ server <- function(input, output, session) {
     pageranks[[feather_date]]
   })
   
+  waiter_show( # show the waiter on start of map
+    html = spin_fading_circles() # use a spinner
+  )
+  
   baseMap <- function() {
     leaflet() %>%
       addMapboxGL(style = "mapbox://styles/mdubel/ck8de7zi32rax1iql63j5b70g") %>%
@@ -58,6 +62,9 @@ server <- function(input, output, session) {
   }
   
   baseMap() %>% mapCoronaRank(pageranks$`03-22`, penalty$`03-22`)
+  
+  waiter_hide()  #end map closes loader
+  
   
   observe({
     leafletProxy("risk_map") %>% 
